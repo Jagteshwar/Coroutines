@@ -28,8 +28,6 @@ import com.jagteshwar.coroutines.ui.theme.CoroutinesTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
 val TAG: String = "KOTLINFUN"
@@ -88,15 +86,16 @@ private fun doAction(){
 //    }
     CoroutineScope(Dispatchers.IO).launch {
         Log.d(TAG, "IO-> ${Thread.currentThread().name}")
+        executeLongRunningTask()
     }
 
-    GlobalScope.launch(Dispatchers.Main) {
-        Log.d(TAG, "Main-> ${Thread.currentThread().name}")
-    }
-
-    MainScope().launch(Dispatchers.Default){
-        Log.d(TAG, "Default-> ${Thread.currentThread().name}")
-    }
+//    GlobalScope.launch(Dispatchers.Main) {
+//        Log.d(TAG, "Main-> ${Thread.currentThread().name}")
+//    }
+//
+//    MainScope().launch(Dispatchers.Default){
+//        Log.d(TAG, "Default-> ${Thread.currentThread().name}")
+//    }
 }
 
 private fun executeLongRunningTask(){
