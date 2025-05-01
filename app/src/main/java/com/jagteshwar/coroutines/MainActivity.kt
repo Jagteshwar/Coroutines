@@ -1,10 +1,13 @@
 package com.jagteshwar.coroutines
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.jagteshwar.coroutines.ui.theme.CoroutinesTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -13,6 +16,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 const val TAG: String = "KOTLIN"
+lateinit var viewModel: MainViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,11 +27,23 @@ class MainActivity : ComponentActivity() {
 
             }
         }
+        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+        lifecycleScope.launch {
+            delay(2000)
+            val intent = Intent(this@MainActivity, MainActivity2::class.java)
+            startActivity(intent)
+            finish()
+        }
         CoroutineScope(Dispatchers.Main).launch {
-        //    printFollowers()
-            execute()
+            executeTask()
         }
 
+
+
+    }
+
+    private suspend fun executeTask() {
+        Log.d(TAG, "Before")
 
     }
 
