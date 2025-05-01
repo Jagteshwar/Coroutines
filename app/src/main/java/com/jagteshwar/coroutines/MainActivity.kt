@@ -24,31 +24,49 @@ class MainActivity : ComponentActivity() {
             }
         }
         CoroutineScope(Dispatchers.Main).launch {
-            printFollowers()
+        //    printFollowers()
+            execute()
         }
 
 
     }
 
+    private suspend fun execute() {
+        val parentJob = CoroutineScope(Dispatchers.Main).launch {
+            Log.d(TAG, "Parent-> $coroutineContext")
+            Log.d(TAG, "Parent Started")
+
+            val childJob = launch(Dispatchers.IO) {
+                Log.d(TAG, "Child-> $coroutineContext")
+                Log.d(TAG, "Child Started")
+                delay(5000)
+                Log.d(TAG, "Child ended")
+            }
+            delay(3000)
+            Log.d(TAG, "Child job cancelled")
+            childJob.cancel()
+            Log.d(TAG, "Parent Ended")
+        }
+        delay(1000)
+        parentJob.cancel()
+        parentJob.join()
+        Log.d(TAG, "Parent Completed")
+    }
+
     private suspend fun printFollowers() {
-        var fbFollowers = 0
-       val job =  CoroutineScope(Dispatchers.IO).launch {
-            fbFollowers = getFbFollowers()
-        }
-        job.join()
-        Log.d(TAG, "fb followers: $fbFollowers")
+        CoroutineScope(Dispatchers.IO).launch {
+            val fb = async { getFbFollowers() }
+            val insta = async { getInstaFollowers() }
 
-        val insta = CoroutineScope(Dispatchers.IO).async {
-            getInstaFollowers()
+            Log.d(TAG, "fb-> ${fb.await()} || insta-> ${insta.await()}")
         }
-        Log.d(TAG, "insta followers: ${insta.await()}")
-
     }
 
     private suspend fun getFbFollowers(): Int {
         delay(1000)
         return 54
     }
+
     private suspend fun getInstaFollowers(): Int {
         delay(1000)
         return 99
